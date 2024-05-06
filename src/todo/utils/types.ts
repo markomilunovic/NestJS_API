@@ -9,4 +9,4 @@ export type UpdateTodoType = {
     description?: string;
     status?: 'pending' | 'completed';
     imagePath?: string;
-}
+};

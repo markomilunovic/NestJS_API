@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, HttpStatus, UploadedFile, UseInterceptors, UsePipes, ValidationPipe, HttpException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, HttpStatus, UploadedFile, UseInterceptors, UsePipes, ValidationPipe, HttpException, UseGuards, NotFoundException } from '@nestjs/common';
 import { CreateTodoDto } from '../dtos/createTodo.dto';
 import { TodoService } from '../services/todo.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -50,11 +50,12 @@ export class TodoController {
     async getTodoById(@Param('id') id: string): Promise<Todo> {
         try {
             const todo = await this.todoService.getById(id);
-            if (!todo) {
-                throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
-            };
+           
             return todo;
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            };
             throw new HttpException('Error retrieving todo by id', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };
@@ -70,13 +71,13 @@ export class TodoController {
     }))
     async updateTodo(@Param('id') id: string, @UploadedFile() file: Express.Multer.File, @Body() updateTodoDto: UpdateTodoDto): Promise<object> {
         try {
+            await this.todoService.update(id, updateTodoDto, file.path);
 
-            const updated = await this.todoService.update(id, updateTodoDto, file.path);
-            if (!updated) {
-                throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
-            };
             return { message: 'Todo updated successfully' };
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            };
             throw new HttpException('Error updating todo', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };
@@ -84,16 +85,14 @@ export class TodoController {
     @Delete(':id')
     async deleteTodo(@Param('id') id: string): Promise<object> {
         try {
-
-            const deleted = await this.todoService.delete(id);
-            if (!deleted) {
-                throw new HttpException('Todo not found', HttpStatus.NOT_FOUND);
-            }
-            else {
+            await this.todoService.delete(id);
+            
             return { message: 'Todo deleted successfully' };
-            }
         }
         catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            };
             throw new HttpException('Error deleting todo', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };

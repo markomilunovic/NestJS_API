@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Put, Query, HttpStatus, HttpException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Query, HttpStatus, HttpException, NotFoundException, UseGuards } from '@nestjs/common';
 import { UpdateUserDto } from '../dtos/updateUser.dto';
 import { UserService } from '../services/user.service';
 import { User } from 'models/user.model';
+import { JwtAuthGuard } from 'auth/guards/jwt.guard';
 
-
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
 
@@ -31,6 +32,9 @@ export class UserController {
             };
             return user;
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            };
             throw new HttpException('Error retrieving user by id', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };
@@ -38,13 +42,13 @@ export class UserController {
     @Put(':id')
     async updateUser(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto): Promise<object> {
         try {
-
-            const updated = await this.userService.update(id, updateUserDto);
-            if (!updated) {
-                throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-            };
+            await this.userService.update(id, updateUserDto);
+        
             return { message: 'User updated successfully' };
         } catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            };
             throw new HttpException('Error updating user', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };
@@ -52,16 +56,14 @@ export class UserController {
     @Delete(':id')
     async deleteUser(@Param('id') id: string): Promise<object> {
         try {
+            await this.userService.delete(id);
 
-            const deleted = await this.userService.delete(id);
-            if (!deleted) {
-                throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-            }
-            else {
             return { message: 'User deleted successfully' };
-            }
         }
         catch (error) {
+            if (error instanceof NotFoundException) {
+                throw error;
+            };
             throw new HttpException('Error deleting user', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };

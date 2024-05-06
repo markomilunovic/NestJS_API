@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '/models/user.model';
-import { AccessToken } from 'models/accessToken.model';
-import { RefreshToken } from 'models/refreshToken.model';
-import { ResetToken } from 'models/resetToken.model';
+import { User } from '../../models/user.model';
+import { AccessToken } from '../../models/accessToken.model';
+import { RefreshToken } from '../../models/refreshToken.model';
+import { ResetToken } from '../../models/resetToken.model';
 import { RegisterType } from '../utils/types';
 
 @Injectable()
@@ -15,6 +15,11 @@ export class AuthRepository {
     async findUserByEmail(email: string): Promise<User | null> {
 
         return User.findOne({ where: { email } }); 
+    };
+
+    async findUserByUsername(username: string): Promise<User | null> {
+
+        return User.findOne({ where: { username } }); 
     };
 
     async createAccessToken(userId: number, accessTokenExpiresAt: Date): Promise<AccessToken> {

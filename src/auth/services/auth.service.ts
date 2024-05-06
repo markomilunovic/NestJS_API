@@ -1,10 +1,10 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { AuthRepository } from '../repositories/auth.repository';
 import * as bcrypt from 'bcryptjs';
 import { User } from 'models/user.model';
 import { EmailService } from './email.service';
 import { TokenService } from './token.service';
-import { ForgotPasswordType, LoginType, RegisterType, ResetPasswordType } from '../utils/types';
+import { ForgotPasswordType, LoginType, RegisterType, ResetPasswordType, UserPublicDataType } from '../utils/types';
 import { ConfigService } from '@nestjs/config';
 
 
@@ -19,15 +19,25 @@ export class AuthService {
     ) {}
 
     
-        async registerUser(registerType: RegisterType): Promise<void> {
-            const { email, password } = registerType;
+        async registerUser(registerType: RegisterType): Promise<UserPublicDataType> {
+            const { email, password, username } = registerType;
     
-            if (await this.authRepository.findUserByEmail(email)) {
-                throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+            if (await this.authRepository.findUserByUsername(username) || await this.authRepository.findUserByEmail(email)) {
+              throw new BadRequestException('User already exists');
             };
-    
+
             const hashedPassword = await bcrypt.hash(password, 10);
-            await this.authRepository.register({...registerType, password: hashedPassword});
+            const user = await this.authRepository.register({...registerType, password: hashedPassword});
+
+            const registeredUser = {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName
+            };
+
+            return registeredUser;
         };
 
 

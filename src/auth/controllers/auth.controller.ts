@@ -1,4 +1,4 @@
-import { Body, Controller, HttpException, HttpStatus, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, HttpException, HttpStatus, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dtos/register.dto';
 import { LoginDto } from '../dtos/login.dto';
@@ -16,10 +16,14 @@ export class AuthController {
     async register(@Body() registerDto: RegisterDto): Promise<object> {
 
         try{
-            await this.authService.registerUser(registerDto);
-            return { message: 'User registered successfully' };
-            
+            const user = await this.authService.registerUser(registerDto);
+
+            return { message: 'User registered successfully', user };
         } catch (error) {
+            if (error instanceof BadRequestException) {
+                throw error;
+            };
+            console.log(error);
             throw new HttpException('Error registering user', HttpStatus.INTERNAL_SERVER_ERROR);
         };
     };

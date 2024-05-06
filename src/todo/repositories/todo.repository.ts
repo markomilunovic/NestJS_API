@@ -1,13 +1,12 @@
-import { Todo } from "models/todo.model";
-import { CreateTodoDto } from "../dtos/createTodo.dto";
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { UpdateTodoDto } from "../dtos/updateTodo.dto";
+import { Injectable } from "@nestjs/common";
+import { CreateTodoType, UpdateTodoType } from "todo/utils/types";
+import { Todo } from "../../models/todo.model";
 
 @Injectable()
 export class TodoRepository{
 
-    async createTodo(createTodoDto: CreateTodoDto, filePath: string): Promise<Todo> {
-        const todo = await Todo.create({ ...createTodoDto, imagePath: filePath });
+    async createTodo(createTodoType: CreateTodoType, filePath: string): Promise<Todo> {
+        const todo = await Todo.create({ ...createTodoType, imagePath: filePath });
         return todo;
     };
 
@@ -21,18 +20,15 @@ export class TodoRepository{
 
     async getTodoById(id: string): Promise<Todo> {
         const todo = await Todo.findByPk(id);
-        if (!todo) {
-            throw new NotFoundException('Todo not found');
-        }
+    
         return todo;
     };
 
-    async updateTodo(id: string, updateTodoDto: UpdateTodoDto, filePath: string): Promise<Todo> {
+    async updateTodo(id: string, updateTodoType: UpdateTodoType, filePath: string): Promise<Todo> {
         const todo = await Todo.findByPk(id);
-        if (!todo) {
-            throw new NotFoundException('Todo not found');
-        }
-        const updatedTodo = await todo.update({ ...updateTodoDto, imagePath: filePath });
+        
+        const updatedTodo = await todo.update({ ...updateTodoType, imagePath: filePath });
+
         return updatedTodo;
     };
 

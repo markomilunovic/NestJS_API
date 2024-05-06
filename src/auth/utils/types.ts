@@ -30,3 +30,10 @@ export type ResetTokneEncodeType = {
     email: string;
 };
 
+export type UserPublicDataType = {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
