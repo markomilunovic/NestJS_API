@@ -3,7 +3,6 @@ import { TodoService } from './todo.service';
 import { TodoRepository } from '../repositories/todo.repository';
 import { Todo } from 'models/todo.model';
 import { CreateTodoType, UpdateTodoType } from 'todo/utils/types';
-import * as fs from 'fs';
 import { FileService } from './file.service';
 
 jest.mock('../repositories/todo.repository');
