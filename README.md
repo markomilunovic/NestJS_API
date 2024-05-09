@@ -117,7 +117,6 @@ docker-compose down
 
 ### User Management
 
-- **POST /user:** Create a new user.
 - **GET /user:** Get all users.
 - **GET /user/:id:** Get a specific user.
 - **PUT /user/:id:** Update a specific user.
