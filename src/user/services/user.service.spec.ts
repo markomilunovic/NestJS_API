@@ -40,8 +40,8 @@ describe('UserService', () => {
   describe('getAll', () => {
     it('should return all users', async () => {
       const mockUsers: Partial<User>[] = [
-        { id: 1, username: 'User 1', email: 'test1@example.com', password: 'testPassword1', firstName: 'Test1', lastName: 'User1' },
-        { id: 2, username: 'User 2', email: 'test2@example.com', password: 'testPassword2', firstName: 'Test2', lastName: 'User2' }
+        { id: 1, roles: 'admin', username: 'User 1', email: 'test1@example.com', password: 'testPassword1', firstName: 'Test1', lastName: 'User1' },
+        { id: 2, roles: 'user', username: 'User 2', email: 'test2@example.com', password: 'testPassword2', firstName: 'Test2', lastName: 'User2' }
       ];
 
       const page = 1;
@@ -59,6 +59,7 @@ describe('UserService', () => {
       const userId = '1';
       const expectedUser: Partial<User> = { 
         id: 1, 
+        roles: 'admin',
         username: 'testUser',
         email: 'test@example.com',
         password: 'testPassword',
@@ -85,6 +86,7 @@ describe('UserService', () => {
     it('should update a user', async () => {
       const userId = '123'; 
       const updatedUser = {
+        roles: 'admin',
         username: 'testUser',
         email: 'test@example.com',
         password: 'testPassword',
@@ -101,6 +103,7 @@ describe('UserService', () => {
     it('should throw NotFoundException when no user is found', async () => {
       const nonExistentUserId = '999';
       const updatedUser = {
+        roles: 'admin',
         username: 'testUser',
         email: 'test@example.com',
         password: 'testPassword',
@@ -118,6 +121,7 @@ describe('UserService', () => {
       const userId = '123';
      
       userRepository.getUserById.mockResolvedValue({
+        roles: 'admin',
         username: 'testUser',
         email: 'test@example.com',
         password: 'testPassword',

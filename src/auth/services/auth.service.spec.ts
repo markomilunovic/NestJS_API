@@ -6,6 +6,7 @@ import { BadRequestException } from '@nestjs/common';
 import { EmailService } from './email.service';
 import { TokenService } from './token.service';
 import { ConfigService } from '@nestjs/config';
+import { RegisterType, Role } from 'auth/utils/types';
 
 jest.mock('bcryptjs', () => ({
   hash: jest.fn().mockResolvedValue('hashedPassword'),
@@ -65,7 +66,8 @@ describe('AuthService', () => {
 
 
   describe('registerUser', () => {
-    const registerData = {
+    const registerData: RegisterType = {
+      roles: 'admin',
       username: 'testUser',
       email: 'test@example.com',
       password: 'password123',
@@ -82,6 +84,7 @@ describe('AuthService', () => {
 
       expect(result).toEqual({
         id: 1,
+        roles: registerData.roles,
         username: registerData.username,
         email: registerData.email,
         firstName: registerData.firstName,
@@ -92,6 +95,7 @@ describe('AuthService', () => {
     it('should throw a BadRequestException if the user already exists', async () => {
       authRepository.findUserByUsername.mockResolvedValue({
         id: 1,
+        roles: registerData.roles,
         username: registerData.username,
         email: registerData.email,
         password: 'hashedPassword',
@@ -106,6 +110,7 @@ describe('AuthService', () => {
       authRepository.findUserByUsername.mockResolvedValue(null);
       authRepository.findUserByEmail.mockResolvedValue({
         id: 1,
+        roles: registerData.roles,
         username: registerData.username,
         email: registerData.email,
         password: 'hashedPassword',
