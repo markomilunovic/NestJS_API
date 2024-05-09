@@ -1,4 +1,5 @@
 export type RegisterType = {
+    roles: Role,
     username: string;
     password: string;
     email: string;
@@ -31,9 +32,27 @@ export type ResetTokneEncodeType = {
 };
 
 export type UserPublicDataType = {
+    roles: 'user' | 'admin';
     id: number;
     username: string;
     email: string;
     firstName: string;
     lastName: string;
   };
+
+  export type Role = 'admin' | 'user';
+
+  export type JwtPayloadType = {
+  user: {
+    id: number;
+    roles: Role,
+    username: string;
+    password: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
+  iat: number;
+  exp: number;
+};
+

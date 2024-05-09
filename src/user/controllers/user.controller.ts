@@ -2,16 +2,17 @@ import { Body, Controller, Delete, Get, Param, Put, Query, HttpStatus, HttpExcep
 import { UpdateUserDto } from '../dtos/updateUser.dto';
 import { UserService } from '../services/user.service';
 import { User } from 'models/user.model';
-import { JwtAuthGuard } from 'auth/guards/jwt.guard';
+import { Roles } from 'auth/decorators/roles.decorator';
+import { RolesGuard } from 'auth/guards/roles.guard';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards( RolesGuard)
 @Controller('user')
 export class UserController {
 
     constructor(private userService: UserService) {}
     
-
     @Get()
+    @Roles('admin')
     async getAllUsers(@Query('page') page: string, @Query('size') size: string): Promise<User[]> {
         try {
             const pageAsNumber = parseInt(page, 10) || 0;

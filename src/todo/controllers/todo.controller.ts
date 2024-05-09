@@ -6,14 +6,17 @@ import { UpdateTodoDto } from '../dtos/updateTodo.dto';
 import { diskStorage } from 'multer';
 import { Todo } from 'models/todo.model';
 import { JwtAuthGuard } from 'auth/guards/jwt.guard';
+import { Roles } from 'auth/decorators/roles.decorator';
+import { RolesGuard } from 'auth/guards/roles.guard';
 
 @Controller('todo')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class TodoController {
 
     constructor(private todoService: TodoService) {}
 
     @Post()
+    @Roles('admin')
     @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
@@ -61,6 +64,7 @@ export class TodoController {
     };
 
     @Put(':id')
+    @Roles('admin')
     @UseInterceptors(FileInterceptor('file', {
         storage: diskStorage({
             destination: 'images',
@@ -83,6 +87,7 @@ export class TodoController {
     };
 
     @Delete(':id')
+    @Roles('admin')
     async deleteTodo(@Param('id') id: string): Promise<object> {
         try {
             await this.todoService.delete(id);

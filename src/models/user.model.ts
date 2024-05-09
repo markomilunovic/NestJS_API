@@ -1,4 +1,4 @@
-import { AutoIncrement, Column, PrimaryKey, Table, Unique, Model } from "sequelize-typescript";
+import { AutoIncrement, Column, PrimaryKey, Table, Unique, Model, DataType } from "sequelize-typescript";
 
 @Table({
     tableName: 'user', 
@@ -10,6 +10,12 @@ export class User extends Model{
     @AutoIncrement
     @Column
     id: number;
+
+    @Column({
+      type: DataType.ENUM('user', 'admin'),
+      defaultValue: 'admin'
+  })
+    roles: 'user' | 'admin';
 
     @Unique
     @Column({allowNull: false})

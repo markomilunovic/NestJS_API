@@ -1,4 +1,5 @@
 export type UpdateUserType = {
+    roles?: 'user' | 'admin';
     username?: string;
     password?: string;
     email?: string;

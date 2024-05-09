@@ -31,6 +31,7 @@ export class AuthService {
 
             const registeredUser = {
               id: user.id,
+              roles: user.roles,
               username: user.username,
               email: user.email,
               firstName: user.firstName,
