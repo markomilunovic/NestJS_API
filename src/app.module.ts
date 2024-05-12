@@ -10,9 +10,7 @@ import { TodoModule } from './todo/todo.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { SequelizeModuleOptions } from '@nestjs/sequelize';
-import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from 'auth/guards/roles.guard';
-import { JwtAuthGuard } from 'auth/guards/jwt.guard';
+import { CachingModule } from 'caching/caching.module';
 
 @Module({
   imports: [
@@ -35,16 +33,8 @@ import { JwtAuthGuard } from 'auth/guards/jwt.guard';
     TodoModule,
     UserModule,
     AuthModule,
+    CachingModule
   ],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard
-    },
-    { provide: APP_GUARD, 
-      useClass: RolesGuard 
-    }
-  ]
 })
 export class AppModule {}
 

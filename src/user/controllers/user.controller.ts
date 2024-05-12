@@ -1,11 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Put, Query, HttpStatus, HttpException, NotFoundException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Query, HttpStatus, HttpException, NotFoundException, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UpdateUserDto } from '../dtos/updateUser.dto';
 import { UserService } from '../services/user.service';
 import { User } from 'models/user.model';
 import { Roles } from 'auth/decorators/roles.decorator';
 import { RolesGuard } from 'auth/guards/roles.guard';
 
-@UseGuards( RolesGuard)
+import { JwtAuthGuard } from 'auth/guards/jwt.guard';
+import { Cacheable } from 'caching/decorators/cache.decorator';
+import { CacheInterceptor } from 'caching/interceptors/cache.interceptor';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(CacheInterceptor)
 @Controller('user')
 export class UserController {
 
@@ -13,6 +18,7 @@ export class UserController {
     
     @Get()
     @Roles('admin')
+    @Cacheable('getAllUsers')
     async getAllUsers(@Query('page') page: string, @Query('size') size: string): Promise<User[]> {
         try {
             const pageAsNumber = parseInt(page, 10) || 0;

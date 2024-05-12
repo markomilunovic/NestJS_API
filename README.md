@@ -43,6 +43,10 @@ The project directory is structured as follows:
   - **dtos**: Defines Data Transfer Objects for user data validation and transfer.
   - **utils**: Includes utility files like types for shared types and interfaces.
 
+- **caching**: Contains caching mechanisms.
+  - **interceptors**: Holds caching interceptors for managing data caching.
+  - **services**: Manages Redis service for caching.
+  - **decorators**: Contains a decorator used for caching functionalities.
 - **models**: Defines Sequelize models for database tables.
 - **database**: Includes subfolders for:
   - **migrations**: Contains migration scripts for database version control.
@@ -132,6 +136,8 @@ The project uses the following environment variables:
 - **DB_NAME:** Name of the database.
 - **DB_HOST:** Host address for the database.
 - **DB_PORT**: The port number on which the database server is listening.
+- **REDIS_PORT**: Port number for Redis.
+- **REDIS_DB**: Redis database index.
 
 <br>
 

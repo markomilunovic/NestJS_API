@@ -3,7 +3,7 @@ import { IsEmail, IsIn, IsNotEmpty } from "class-validator";
 export class RegisterDto {
     @IsNotEmpty({ message: 'Roles is required' })
     @IsIn(['user', 'admin'])
-    roles?: 'user' | 'admin';
+    roles: 'user' | 'admin';
 
     @IsNotEmpty({ message: 'Username is required' })
     username: string;

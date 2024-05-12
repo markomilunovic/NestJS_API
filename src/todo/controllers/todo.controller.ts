@@ -8,9 +8,12 @@ import { Todo } from 'models/todo.model';
 import { JwtAuthGuard } from 'auth/guards/jwt.guard';
 import { Roles } from 'auth/decorators/roles.decorator';
 import { RolesGuard } from 'auth/guards/roles.guard';
+import { Cacheable } from 'caching/decorators/cache.decorator';
+import { CacheInterceptor } from 'caching/interceptors/cache.interceptor';
 
 @Controller('todo')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@UseInterceptors(CacheInterceptor)
 export class TodoController {
 
     constructor(private todoService: TodoService) {}
@@ -38,6 +41,7 @@ export class TodoController {
     
 
     @Get()
+    @Cacheable('GetAllTodos')
     async getAllTodos(@Query('page') page: string, @Query('size') size: string): Promise<Todo[]> {
         try {
             const pageAsNumber = parseInt(page, 10) || 0;
